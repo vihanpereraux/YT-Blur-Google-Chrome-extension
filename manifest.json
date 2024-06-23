@@ -1,0 +1,10 @@
+{
+    "manifest_version": 3,
+    "name": "Blurred Thumbnails",
+    "description": "Blurring YouTube thumnails to increse the productivity :/",
+    "version": "1.0",
+    "action": {
+        "default_popup": "popup/popup.html",
+        "default_icon": "images/extensions.png"
+    }
+}
