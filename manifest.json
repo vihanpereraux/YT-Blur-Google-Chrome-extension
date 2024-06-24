@@ -3,6 +3,19 @@
     "name": "Blurred Thumbnails",
     "description": "Blurring YouTube thumnails to increse the productivity :/",
     "version": "1.0",
+    "content_scripts": [
+        {
+            "js": [
+                "scripts/content.js"
+            ],
+            "css": [
+                "scripts/content.css"
+            ],
+            "matches": [
+                "https://www.youtube.com/*"
+            ]
+        }
+    ],
     "action": {
         "default_popup": "popup/popup.html",
         "default_icon": "images/extensions.png"
