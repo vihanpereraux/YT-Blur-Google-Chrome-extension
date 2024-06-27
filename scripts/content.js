@@ -1,46 +1,70 @@
-// get all thumnial wrappers
-const targetElements = document.querySelectorAll('ytd-rich-item-renderer');
+var isCountPrinted = false;
 
-function injectCount() {
+function displayTestPropmt(header, targetElements) {
+    if (!isCountPrinted) {
+        const countElement = document.createElement('p');
+        countElement.textContent = `YT  Chrome Extension is enebaled and removed ${targetElements.length} elements !`;
+        countElement.style.fontSize = '12px';
+        countElement.style.fontWeight = 'medium';
+        countElement.style.color = 'white';
+        countElement.style.marginTop = '10px';
+        header.insertBefore(countElement, header.firstChild);
+    }
+    isCountPrinted = true;
+}
+
+function applyOverlayElements() {
+    // get all thumnial wrappers
+    let targetElements = document.querySelectorAll('ytd-rich-grid-row');
+
     // target /parent DOM element - YT home screen
-    const header = document.querySelector('ytd-rich-grid-renderer');
+    let header = document.querySelector('ytd-rich-grid-renderer');
 
     // test display prompt - item count
-    displayTestPropmt(header);
+    displayTestPropmt(header, targetElements);
+
+    let addBannerElement = document.querySelector('masthead-ad');
+    if (addBannerElement) {
+        addBannerElement.style.opacity = 0;
+    }
 
     if (header) {
         for (let index = 0; index < targetElements.length; index++) {
             // overlay element
-            let shaderElement = document.createElement('div');
+            let thumbnailOverlayElement = document.createElement('div');
             // add stylings
-            shaderElement.classList.add('blur-props');
+            thumbnailOverlayElement.classList.add('thumbnail-overlay-props');
             targetElements[index].style.position = 'relative';
             // injecting
-            targetElements[index].insertAdjacentElement('afterbegin', shaderElement);
+            targetElements[index].insertAdjacentElement('afterbegin', thumbnailOverlayElement);
         }
     } else {
         console.error('ytd-rich-grid-renderer element not found');
     }
 }
 
-function displayTestPropmt(header) {
-    const countElement = document.createElement('p');
-    countElement.textContent = `Number of rich item renderers: ${targetElements.length}`;
-    countElement.style.fontSize = '16px';
-    countElement.style.fontWeight = 'bold';
-    countElement.style.color = '#ff0000';
-    countElement.style.marginTop = '10px';
-    header.insertBefore(countElement, header.firstChild);
-}
- 
-function waitForElements(selector, injectCount) {
+function startFechingElements(selector, applyOverlayElements) {
     // wait till YT DOM fully loads
-    const waitingTime = 10;
+    const waitingTime = 200;
+
+    const injectTimeout = setTimeout(() => {
+        // overlay elements
+        let filterChipsOverlayElement = document.createElement('div');
+        // add stylings
+        filterChipsOverlayElement.classList.add('filter-chips-overlay-props');
+
+        // injecting the overlay
+        const ytdFeedFilterElement = document.querySelectorAll('ytd-feed-filter-chip-bar-renderer');
+        ytdFeedFilterElement[0].style.position = 'relative';
+        ytdFeedFilterElement[0].style.opacity = .3;
+        ytdFeedFilterElement[0].insertAdjacentElement('afterbegin', filterChipsOverlayElement)
+    }, waitingTime);
+
     const injectInterval = setInterval(() => {
         if (document.querySelector(selector)) {
-            clearInterval(injectInterval);
-            injectCount();
+            // clearInterval(injectInterval);
+            applyOverlayElements();
         }
     }, waitingTime);
 }
-waitForElements('ytd-rich-grid-renderer', injectCount);
+startFechingElements('ytd-rich-grid-renderer', applyOverlayElements);
