@@ -45,7 +45,7 @@ function applyOverlayElements() {
 
 function startFechingElements(selector, applyOverlayElements) {
     // wait till YT DOM fully loads
-    const waitingTime = 200;
+    const waitingTime = 150;
 
     const injectTimeout = setTimeout(() => {
         // overlay elements
@@ -62,7 +62,7 @@ function startFechingElements(selector, applyOverlayElements) {
 
     const injectInterval = setInterval(() => {
         if (document.querySelector(selector)) {
-            // clearInterval(injectInterval);
+            clearInterval(injectInterval);
             applyOverlayElements();
         }
     }, waitingTime);
