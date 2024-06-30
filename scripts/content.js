@@ -1,4 +1,5 @@
 var isCountPrinted = false;
+var isPageReloaded = false;
 
 function displayTestPropmt(header, targetElements) {
     if (!isCountPrinted) {
@@ -14,9 +15,10 @@ function displayTestPropmt(header, targetElements) {
 }
 
 function applyOverlayElements() {
-    // get all thumnial wrappers
+    // get all thumbnial wrappers
     let targetElements = document.querySelectorAll('ytd-rich-grid-row');
-
+    // get the top news wrapper
+    let topNewsWrapperElement = document.querySelectorAll('ytd-rich-shelf-renderer');
     // target /parent DOM element - YT home screen
     let header = document.querySelector('ytd-rich-grid-renderer');
 
@@ -28,11 +30,10 @@ function applyOverlayElements() {
         addBannerElement.style.opacity = 0;
     }
 
-    if (header) {
+    if (targetElements) {
         for (let index = 0; index < targetElements.length; index++) {
             // overlay element
             let thumbnailOverlayElement = document.createElement('div');
-            // add stylings
             thumbnailOverlayElement.classList.add('thumbnail-overlay-props');
             targetElements[index].style.position = 'relative';
             // injecting
@@ -41,25 +42,30 @@ function applyOverlayElements() {
     } else {
         console.error('ytd-rich-grid-renderer element not found');
     }
+
+    if (topNewsWrapperElement) {
+        // overlay element
+        let topNewsOverlayElement = document.createElement('div');
+        topNewsOverlayElement.classList.add('filter-chips-overlay-props');
+        topNewsWrapperElement[0].style.position = 'relative';
+        // injecting
+        topNewsWrapperElement[0].insertAdjacentElement('afterbegin', topNewsOverlayElement)
+    } else {
+        console.error('ytd-rich-shelf-renderer element not found');
+    }
 }
 
 function startFechingElements(selector, applyOverlayElements) {
     // wait till YT DOM fully loads
-    const waitingTime = 150;
+    const waitingTime = 50;
 
+    // for the home page chips
     const injectTimeout = setTimeout(() => {
-        // overlay elements
-        let filterChipsOverlayElement = document.createElement('div');
-        // add stylings
-        filterChipsOverlayElement.classList.add('filter-chips-overlay-props');
-
-        // injecting the overlay
         const ytdFeedFilterElement = document.querySelectorAll('ytd-feed-filter-chip-bar-renderer');
-        ytdFeedFilterElement[0].style.position = 'relative';
-        ytdFeedFilterElement[0].style.opacity = .3;
-        ytdFeedFilterElement[0].insertAdjacentElement('afterbegin', filterChipsOverlayElement)
+        ytdFeedFilterElement[0].style.display = 'none';
     }, waitingTime);
 
+    // for the home page thumbnails
     const injectInterval = setInterval(() => {
         if (document.querySelector(selector)) {
             clearInterval(injectInterval);
